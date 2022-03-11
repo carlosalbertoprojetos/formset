@@ -1,0 +1,35 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Programmer{% endblock title %}
+
+
+{% block dashboard %}
+
+<h3>Programmer Details</h3>
+
+<div class="card-header">
+    <i class="fas fa-table me-1"></i>
+    <div>
+        ID: {{ object.id }}
+        <h3>Name:
+            <strong>{{ object.name }}</strong>
+        </h3>
+    </div>
+</div>
+</div>
+<hr>
+<p class="pt-2">
+    <a href="{% url 'formset:add_language' programmer_id=object.id %}"  class="btn btn-dark">Add Language</a>
+</p>
+<p class="pt-2">
+    <a href="{% url 'formset:add_language2' programmer_id=object.id %}"  class="btn btn-dark">Add Language2</a>
+</p>
+<p class="pt-2">
+    <a href="{% url 'formset:programmer_list' %}" class="btn btn-secondary">All Programmers</a>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+</p>
+
+{% endblock %}

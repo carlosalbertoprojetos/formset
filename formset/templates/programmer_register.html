@@ -3,19 +3,19 @@
 
 {% load i18n account static crispy_forms_tags %}
 
-{% block title %}Author{% endblock title %}
+{% block title %}Programmer{% endblock title %}
 
 
 {% block dashboard %}
 
 
 <div class="card">
-    
     <div class="col-md-12 p-lg-0">
-        <div class="card">
-            <div class="card-header">
-                <h4>Author Register</h4>
-            </div>
+        <hr class="m-0 p-0">
+        <div class="card-header">
+            <h4>Programmer</h4>
+        </div>
+        <div class="card-body">
             <form method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     {% for hidden_field in form.hidden_fields %}
@@ -25,19 +25,22 @@
                     
                     {% csrf_token %}
 
+                    {{ form.management_form }}
                     {{ form.non_form_errors }}
-                    
+
                     {% for field in form %}
                         {{ field.errors }}
                         {{ field.label_tag }}
                         {{ field }}                    
-                    {% endfor %}
+                    {% endfor %}                    
                 </div>
                 <div class="mt-2">
-                    <div class="">
-                        <input type="submit" class="btn btn-dark" value="Cadastrar" />
-                        <a href="{% url 'dashboard' %}" role="button" class="btn btn-secondary">Cancelar</a>
-                    </div>
+                    <p class="pt-2">
+                        <input type="submit" class="btn btn-dark" value="Save" />
+                    </p>
+                    <p class="pt-2">
+                        <a href="{% url 'formset:programmer_list' %}" class="btn btn-secondary">Cancelar</a>
+                    </p>
                 </div>
             </form>
         </div>

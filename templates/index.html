@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 
-
 {% load static %}
 
+{% block title %}Index{% endblock %}
 
-{% block title %}Login/Register{% endblock %}
 
 
 {% block base %}
 
+
+<h1>Seja bem vindo, {{ user }}</h1>
+
+<h2>Formset 1:  <a href="{% url 'formset:orders_list' %}">List Order</a></h2>
+
+<h2>Formset 2:  <a href="{% url 'formset:programmer_list' %}">Programmer</a></h2>
 
 
 {% endblock %}

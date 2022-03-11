@@ -20,12 +20,12 @@ from django.urls import include, path
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='index.html'), name='index'),
-    
+    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+
     path('user/', include('user.urls'), name='user'),
-    
-    path('formset/', include('formset.urls'), name='formset'),    
-    
+
+    path('formset/', include('formset.urls'), name='formset'),
+
     path('admin/', admin.site.urls),
 ]
 

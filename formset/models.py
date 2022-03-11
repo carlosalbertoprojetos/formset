@@ -4,6 +4,8 @@ from django.urls import reverse
 
 
 
+# ================================================= PRIMEIRO EXEMPLO FORMSET =================================================
+# https://www.youtube.com/watch?v=OduVfuv44K8
 class Product(models.Model):
 
     name = models.CharField('Produto', max_length=255, unique=True)
@@ -21,17 +23,9 @@ class Product(models.Model):
         ordering = ["name"]
         verbose_name = "Produto"
         verbose_name_plural = "Produtos"
-
-    # def get_absolute_url_Detail(self):
-    #     return reverse('product:product_detail', args=[self.pk])
-    
-    
-    # def get_absolute_url_Update(self):
-    #     return reverse('product:product_update', args=[self.pk])
-    
+  
     def __str__(self):
         return self.name
-
 
 
 class Order(models.Model):
@@ -68,9 +62,6 @@ class Order(models.Model):
     def get_absolute_url_details(self):
         return reverse('formset:order_details', args=[self.pk])
         # return reverse('formset:order_details', kwargs={'pk':self.pk})
-        
-    # def get_absolute_url_update(self):
-    #     return reverse('formset:order_update', args=[self.pk])
 
     def __str__(self):
         return str(self.id)
@@ -92,5 +83,25 @@ class OrderProducts(models.Model):
 
     def __str__(self):
         return str(self.product)
+
+
+# ================================================= SEGUNDO EXEMPLO FORMSET =================================================
+# https://www.youtube.com/watch?v=JIvJL1HizP4
+
+class Programmer(models.Model):
     
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return str(self.name)
+
+    def get_absolute_url_details(self):
+        return reverse('formset:programmer_details', args=[self.pk])
+
+class Language(models.Model):
     
+    name = models.CharField(max_length=20)
+    programmer = models.ForeignKey(Programmer, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.name)

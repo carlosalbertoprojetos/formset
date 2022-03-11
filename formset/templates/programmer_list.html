@@ -1,0 +1,51 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Programmers{% endblock title %}
+
+
+{% block dashboard %}
+
+
+<main id="form-dash">
+    <div class="container-fluid pt-2">
+        <div class="card p-2">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <h2 class="form-title">Programmers</h2>                        
+                </div>
+                <div id="bottom_list" class="col-sm-12 col-md-6">
+                    <a href="{ url 'order:author_register' %}">
+                        <i class="fas fa-plus-circle fa-2x"></i></a>                        
+                </div>
+            </div>
+        </div>
+
+        {% if object_list %}
+            <ul class="list-group">
+                {% for order in object_list %}
+                    <li class="list-group-item">
+                        <a href="{% url 'formset:programmer_details' order.pk %}" class="text-reset"><h1>{{ order.label_tag }} {{ order }}</h1></a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+            <p>There are not Programmers</p>
+
+        {% endif %}
+
+        <div class="mt-2">
+            <p class="pt-2">
+                <a href="{% url 'formset:programmer_create' %}"  class="btn btn-dark">Add Programmer</a>
+            </p>
+            <p class="pt-2">
+                <a href="{% url 'home' %}" class="btn btn-secondary">Cancelar</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
