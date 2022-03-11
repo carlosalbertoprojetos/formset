@@ -1,0 +1,87 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Editing books for {{ author.name }} {% endblock title %}
+
+
+{% block dashboard %}
+
+
+<main id="form-dash">
+    <div class="col-lg-6 col-md-12 container pt-4">
+        <div class="card ms-2">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Editar Pedido
+                <div class="small">Pedido ID: {{ order.id }}</div>
+                <div>Data: {{ order.data }}</div>
+                <div>Forma de pagamento: {{ order.formpayment }}</div>
+                <div>Total: {{ order.total }}</div>
+                <div>Situação do pedido: {{ order.status }}</div>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field.errors }}
+                            {{ hidden_field }}
+                        {% endfor %}
+                        
+                        {% csrf_token %}
+    
+                        {{ form.management_form }}
+                        {{ form.non_form_errors }}
+
+                        <hr>
+                        <h3>Produtos</h3>
+                        
+                        {% for product_form in form.forms %}
+                            <h5>
+                                {% if product_form.instance.id %}
+                                    Produto: {{ product_form.instance.name|title  }}
+                                {% else %}
+                                    {% if form.forms|length > 1 %}
+                                        Adicionar outro produto
+                                    {% else %}
+                                        Novo produto
+                                    {% endif %}
+                                {% endif %}
+                            </h5>
+                            {% for hidden_field in product_form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                            {% endfor %}
+                            <table>
+                                {{ product_form.as_table }}
+                            </table>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-2">
+                        <div class="">
+                            <input type="submit" class="btn btn-dark" value="Save" />
+                            <a href="{{ order.get_absolute_url_details }}" role="button" class="btn btn-secondary">Exit</a>
+                        </div>
+                    </div>
+                </form>
+            </div> 
+        </div>
+    </div>
+</main>
+
+<h1>======================== TABLE 1</h1>
+{% for product_form in form.forms %}
+    <table>
+        {{ product_form.as_table }}
+    </table>
+{% endfor %}
+
+<h1>======================== TABLE 2</h1>
+{% for product_form in form.forms %}
+<h3>{{ product_form }}</h2>
+{% endfor %}
+
+
+
+{% endblock %}

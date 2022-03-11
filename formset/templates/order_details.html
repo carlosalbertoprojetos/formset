@@ -1,0 +1,29 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Pedido{% endblock title %}
+
+
+{% block dashboard %}
+
+<h3>Detalhes do Pedido</h3>
+
+<div class="card-header">
+    <i class="fas fa-table me-1"></i>
+    Editar Pedido
+    <div class="small">Pedido ID: {{ order.id }}</div>
+    <div>Data: {{ order.data }}</div>
+    <div>Forma de pagamento: {{ order.formpayment }}</div>
+    <div>Total: {{ order.total }}</div>
+    <div>Situação do pedido: {{ order.status }}</div>
+</div>
+<hr>
+<p>
+    <a href="{% url 'formset:order_products_update' order %}" role="button" class="btn btn-primary">Adicionar Produto</a>
+    <a href="" class="btn btn-secondary">Todos os pedidos</a>
+    <a href="{% url 'formset:orders_list' %}" class="btn btn-secondary">Cancelar</a>
+</p>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Pedido{% endblock title %}
+
+
+{% block dashboard %}
+
+
+<div class="card">
+    <div class="col-md-12 p-lg-0">
+        <hr class="m-0 p-0">
+        <div class="card-header">
+            <h4>Pedido</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field.errors }}
+                        {{ hidden_field }}
+                    {% endfor %}
+                    
+                    {% csrf_token %}
+
+                    {{ form.management_form }}
+                    {{ form.non_form_errors }}
+
+                    {% for field in form %}
+                        {{ field.errors }}
+                        {{ field.label_tag }}
+                        {{ field }}                    
+                    {% endfor %}                    
+                </div>
+                <div class="mt-2">
+                    <p class="pt-2">
+                        <input type="submit" class="btn btn-dark" value="Save" />
+                    </p>
+                    <p class="pt-2">
+                        <a href="{% url 'formset:orders_list' %}" class="btn btn-secondary">Cancelar</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>   
+
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script type="text/javascript">
+    $(function() {
+        $('.table_inline_form').formset({
+            prefix: '{{ product.prefix }}',
+            addText: 'Add',
+            deleteText: 'Remove',
+        });
+    })
+</script>
+
+{% endblock scripts %}
+

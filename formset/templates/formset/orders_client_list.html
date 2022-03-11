@@ -1,0 +1,169 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Pedidos{% endblock title %}
+
+
+{% block dashboard %}
+
+
+<main id="form-dash">
+    <div class="container-fluid pt-2">
+        <div class="card p-2">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <h2 class="form-title">Pedidos</h2>                        
+                </div>
+                <div id="bottom_list" class="col-sm-12 col-md-6">
+                    <a href="{% url 'order:order_register' %}">
+                        <i class="fas fa-plus-circle fa-2x"></i></a>                        
+                </div>
+            </div>
+        </div>
+        <div class="card p-2">
+            <div class="table-responsive" >
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Nome</th>
+                            <th>email</th>
+                            <th>Etnia</th>
+                            <th>Criado em</th>
+                            <th>Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Nome</th>
+                            <th>email</th>
+                            <th>Etnia</th>
+                            <th>Criado em</th>
+                            <th>Detalhes</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for order in orders_list %}
+                        <tr>
+                            <td>{{ order.status }}</td>
+                            <td>{{ order.client }}</td>
+                            <td>{{ order.client.email }}</td>
+                            <td>{{ order.client.ethnicity }}</td>
+                            <td>{{ order.created_at|date }}</td>
+                            <td align="center">
+                                <a href="{{ order.get_absolute_url_update }}" class="btn">
+                                    <i class="zmdi zmdi-edit material-icons-name"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- 
+<main id="form-dash">
+    <div class="container-fluid pt-3">
+        <div class="card mb-2">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Perfil do Cliente
+            </div>
+            <div class="row p-0">
+                <div class="col-5 card-body pb-0">
+                    <p>Nome: <b>{{ object.name }}</b> - Telefone: <b>{{ object.celphone }}</b><br />
+                        Email: <b>{{ object.email }}</b> - Mídia Social: <b>{{ object.socialmedia }}</b><br />
+                        Etnia: <b>{{ object.ethnicity }}</b><br />
+                        Cadastro: <b>{{ object.get_status_display }}</b><br />
+                        Criado em: <b>{{ object.created_at|date }}</b> <br />
+                    </p>
+                </div>
+                <div class="col-4 card-body pb-0">
+                    <p>
+                        Rua: <b>{{ object.street }}</b>, Número: <b>{{ object.number }}</b>, Complemento: <b>{{
+                            object.complement }}</b>,</br>
+                        Cidade: <b>{{ object.city }}</b>, Estado: <b>{{ object.state }}</b>,</br>
+                        Criado em: <b>{{ object.created_at|date }}</b><br />
+                    </p>
+                </div>
+                <div class="row m-1">
+                    <div class="col-2 p-2">
+                        <a href="{% url 'client:client_update' client.pk %}" class='btn btn-dark'>Editar</a>
+                    </div>
+                    <div class="col-2 p-2">
+                        <a href="{ url 'order:orders_list_client' %}" class='btn btn-dark'>Pedidos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row m-0">
+            <div class="col-md-12 p-lg-0">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Histórico de Pedidos
+                    </div>
+                    <div class="card-body pb-0">
+                        <div class="container justify-content-center" style='margin-top:20px'>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h1>Lista de Pedidos</h1>
+                                    <a class='btn btn-primary float-right' href="{% url 'pedido:register_order' %}"
+                                        role="button">Novo pedido</a>
+                                </div>
+                                <div class="col-2">
+                                    <a href="{% url 'order:order_register' object.client_id %}" class='btn btn-dark'>Novo Pedido</a>
+                                </div>
+                                <br>
+                                {% for pedido in object_list %}
+                                <table id="datatablesSimple">
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <h3>Nº do pedido: {{ pedido.id }} / Data do pedido: {{ pedido.created_at
+                                                    }}</h3>
+                                                <p>Forma pgto: {{ pedido.formpayment }}</p>
+                                                <p>Retirar: {{ pedido.withdraw }}</p>
+                                                <p>Situação: {{ pedido.status }}</p>
+                                                <p>Data entrega: {{ pedido.data }}</p>
+                                                <p><b>Total do pedido: {{ pedido.total }}</b></p>
+                                            </div>
+                                            <ul>
+                                                {% for t in pedido.produtos.all %}
+                                                <li>{{ t.order }}</li>
+                                                <li>{{ t.amount }}</li>
+                                                <li>{{ t.product }}</li>
+                                                <li>{{ t.price }}</li>
+                                                <li>{{ t.subtotal }}</li>
+                                                <li>{{ t.detalhes }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-primary" href="">Detalhes</a>
+                                            <a class="btn btn-sm btn-warning" href=""> Editar </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td>Nenhum pedido registrado</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main> -->
+
+{% endblock %}

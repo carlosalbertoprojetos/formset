@@ -1,11 +1,12 @@
 from django.db import models
 from autoslug import AutoSlugField
+from django.urls import reverse
 
 
 
 class Product(models.Model):
 
-    name = models.CharField('Nome', max_length=255, unique=True)
+    name = models.CharField('Produto', max_length=255, unique=True)
     slug = AutoSlugField(unique=True, always_update=False,
                          populate_from="name")
     image = models.ImageField(
@@ -33,7 +34,7 @@ class Product(models.Model):
 
 
 
-class Orders(models.Model):
+class Order(models.Model):
 
     STATUS_CHOICES = [
         ('Pendente', 'pendente'),
@@ -64,11 +65,12 @@ class Orders(models.Model):
         verbose_name = 'Pedido'
         verbose_name_plural = 'Pedidos'
 
-    # def get_absolute_url_details(self):
-    #     return reverse('order:order_details', args=[self.pk])
-    
+    def get_absolute_url_details(self):
+        return reverse('formset:order_details', args=[self.pk])
+        # return reverse('formset:order_details', kwargs={'pk':self.pk})
+        
     # def get_absolute_url_update(self):
-    #     return reverse('order:order_update', args=[self.pk])
+    #     return reverse('formset:order_update', args=[self.pk])
 
     def __str__(self):
         return str(self.id)
@@ -76,7 +78,7 @@ class Orders(models.Model):
 
 class OrderProducts(models.Model):
 
-    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(
         Product, on_delete=models.DO_NOTHING, related_name="produto_pedido"
     )
