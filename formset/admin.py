@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Product, Order, OrderProducts, Programmer, Language
+from .models import Product, Order, OrderProducts, Programmer, Language, Cliente, Telefone
 
 
 
@@ -36,3 +36,9 @@ admin.site.register(Product)
 
 
 admin.site.register([Programmer, Language])
+
+
+# ================================================= TERCEIRO EXEMPLO FORMSET =================================================
+
+
+admin.site.register([Cliente, Telefone])

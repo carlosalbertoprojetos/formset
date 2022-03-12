@@ -8,8 +8,8 @@ from django.views.generic import DetailView, FormView, ListView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, UpdateView
 
-from .forms import OrderProductsFormset
-from .models import Language, Order, OrderProducts, Programmer
+from .forms import OrderProductsFormset, ClienteForm, TelefoneFormset
+from .models import Language, Order, OrderProducts, Programmer, Cliente, Telefone
 
 
 class OrdersListView(ListView):
@@ -150,10 +150,92 @@ def add_language3(request, programmer_id):
         formset = LanguageFormset(request.POST, instance=programmer)  
         if formset.is_valid():
             formset.save()
-            return redirect('formset:add_language3', programmer_id=programmer.id)        
+            return redirect('formset:add_language3', programmer_id=programmer.id)
         
     formset = LanguageFormset(instance=programmer)  
 
     return render(request, 'language_inline.html', {'formset':formset})
  
  
+# ================================================= TERCEIRO EXEMPLO FORMSET =================================================
+ 
+def clientes_list(request):
+    cliente = Cliente.objects.all()
+    context = {
+        'cliente': cliente,
+    }
+    return render(request, 'clientes_list.html', context)
+    
+    
+def cliente_details(request, pk):
+    cliente = Cliente.objects.filter(pk=pk)
+    context = {
+        'cliente': cliente,
+    }
+    return render(request, 'cliente_details.html', context)
+    
+
+def cliente_create(request):
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        Form_Telefone_Factory = inlineformset_factory(Cliente, Telefone, form=TelefoneFormset)
+        form_telefone = Form_Telefone_Factory(request.POST)
+        if form.is_valid() and form_telefone.is_valid():
+            cliente = form.save()
+            form_telefone.instance = cliente
+            form_telefone.save()
+            return redirect('formset:cliente_update', id=cliente.id)
+        
+        else:
+            context = {
+                'form': form,
+                'form_telefone':form_telefone
+            }
+            return render(request, 'clientes_list.html', context)
+    
+    elif request.method == 'GET':
+        form = ClienteForm()
+        Form_Telefone_Factory = inlineformset_factory(Cliente, Telefone, form=TelefoneFormset, extra=3)
+        form_telefone = Form_Telefone_Factory()
+        context = {
+            'form': form,
+            'form_telefone':form_telefone
+        }
+        return render(request, 'cliente_create.html', context)
+
+
+
+def cliente_update(request, id):
+    if request.method == 'POST':
+        cliente = Cliente.objects.filter(id=id).first()
+        if cliente is None:
+            return redirect('formset:clientes_list')
+        
+        form = ClienteForm(request.POST, instance=cliente)
+        Form_Telefone_Factory = inlineformset_factory(Cliente, Telefone, form=TelefoneFormset, extra=3)
+        form_telefone = Form_Telefone_Factory(request.POST, instance=cliente)
+        if form.is_valid() and form_telefone.is_valid():
+            form.save()
+            form_telefone.save()
+            return redirect('formset:cliente_update', id=id)
+        
+        else:
+            context = {
+                'form': form,
+                'form_telefone':form_telefone
+         }
+        return render(request, 'cliente_update.html', context)
+        
+    elif request.method == 'GET':
+        cliente = Cliente.objects.filter(id=id).first()
+        if cliente is None:
+            return redirect('formset:clientes_list')
+        
+        form = ClienteForm(instance=cliente)
+        Form_Telefone_Factory = inlineformset_factory(Cliente, Telefone, form=TelefoneFormset, extra=3)
+        form_telefone = Form_Telefone_Factory(instance=cliente)
+        context = {
+            'form': form,
+            'form_telefone':form_telefone
+        }
+        return render(request, 'cliente_update.html', context)

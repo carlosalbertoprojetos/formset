@@ -50,19 +50,3 @@
 
 
 {% endblock %}
-
-
-{% block scripts %}
-
-<script type="text/javascript">
-    $(function() {
-        $('.table_inline_form').formset({
-            prefix: '{{ product.prefix }}',
-            addText: 'Add',
-            deleteText: 'Remove',
-        });
-    })
-</script>
-
-{% endblock scripts %}
-

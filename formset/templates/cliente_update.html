@@ -3,7 +3,7 @@
 
 {% load i18n account static crispy_forms_tags %}
 
-{% block title %}Programmer{% endblock title %}
+{% block title %}Cliente{% endblock title %}
 
 
 {% block dashboard %}
@@ -11,9 +11,8 @@
 
 <div class="card">
     <div class="col-md-12 p-lg-0">
-        <hr class="m-0 p-0">
         <div class="card-header">
-            <h4>Programmer</h4>
+            <h1 class="form-title">Editar Cliente</h1>
         </div>
         <div class="card-body">
             <form method="POST" enctype="multipart/form-data">
@@ -24,29 +23,46 @@
                     {% endfor %}
                     
                     {% csrf_token %}
+                    {{ form.as_p }}
 
-                    {{ form.management_form }}
-                    {{ form.non_form_errors }}
+                    {{ form_telefone.management_form }}
+                    {{ form_telefone.non_form_errors }}
 
-                    {% for field in form %}
+                    {% for field in form_telefone %}
+                    <div class="table_inline_form">
                         {{ field.errors }}
                         {{ field.label_tag }}
-                        {{ field }}                    
-                    {% endfor %}                    
+                        {{ field }}
+                    </div>
+                    {% endfor %}
                 </div>
                 <div class="mt-2">
                     <p class="pt-2">
                         <input type="submit" class="btn btn-dark" value="Save" />
                     </p>
                     <p class="pt-2">
-                        <a href="{% url 'formset:programmer_list' %}" class="btn btn-secondary">Cancelar</a>
+                        <a href="{% url 'formset:clientes_list' %}" class="btn btn-secondary">Cancelar</a>
                     </p>
                 </div>
             </form>
         </div>
     </div>
-</div>   
-
-
+</div>
 
 {% endblock %}
+
+
+{% block scripts %}
+
+<script type="text/javascript">
+    $(function() {
+        $('.table_inline_form').formset({
+            prefix: '{{ form_telefone.prefix }}',
+            addText: 'Add',
+            deleteText: 'Remove',
+        });
+    })
+</script>
+
+{% endblock scripts %}
+

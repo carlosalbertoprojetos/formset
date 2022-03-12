@@ -1,0 +1,69 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Telefones{% endblock title %}
+
+
+{% block dashboard %}
+
+
+<main id="form-dash">
+    <div class="container-fluid pt-2">
+        <div class="card p-2">
+            <div class="col-sm-12 col-md-6">
+                <h1 class="form-title">Telefones</h1>                        
+            </div>
+            <div class="tow top-buffer">
+                <table class="table table-bordered">
+                    {% if cliente %}
+                        {% for lista in cliente %}
+                        <div class="table_inline_form">
+                            <h3><a href="{% url 'formset:cliente_details' lista.pk %}" class="text-reset">{{ lista.label_tag }} {{ lista }}</a></h3>
+                            <div>
+                                <ul class="list-group">
+                                    {% for tel in lista.telefones.all %}
+                                        <li>
+                                            {{ tel.numero }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endfor %}
+        
+                    {% else %}
+                        <p>Não há telefones cadastrados</p>
+        
+                    {% endif %}
+                </table>
+            </div>
+            <div class="mt-2">
+                <p class="pt-2">
+                    <a href="{% url 'formset:cliente_create' %}"  class="btn btn-dark">Adicionar Cliente</a>
+                </p>
+                <p class="pt-2">
+                    <a href="{% url 'home' %}" class="btn btn-secondary">Cancelar</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script type="text/javascript">
+    $(function() {
+        $('.table_inline_form').formset({
+            prefix: '{{ form_telefone.prefix }}',
+            addText: 'Novo',
+            deleteText: 'Remover',
+        });
+    })
+</script>
+
+{% endblock scripts %}

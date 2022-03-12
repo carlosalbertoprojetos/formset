@@ -105,3 +105,29 @@ class Language(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+# ================================================= TERCEIRO EXEMPLO FORMSET =================================================
+# https://www.youtube.com/watch?v=_k-98frcD_M&t=464s
+
+
+class Cliente(models.Model):
+    
+    name = models.CharField(max_length=20)
+    cpf = models.CharField(max_length=11, blank=True)
+    data_nasc = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.name)
+
+    # def get_absolute_url_details(self):
+    #     return reverse('formset:programmer_details', args=[self.pk])
+
+class Telefone(models.Model):
+    
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='telefones')
+    numero = models.CharField(max_length=20)
+    whatsapp = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.numero

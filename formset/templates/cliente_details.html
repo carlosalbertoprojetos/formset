@@ -1,0 +1,53 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Cliente{% endblock title %}
+
+
+{% block dashboard %}
+
+
+<div class="card">
+    <div class="col-md-12 p-lg-0">
+        <div class="card-header">
+            <h1 class="form-title">Detalhes do Cliente</h1>
+        </div>
+        <div class="card-body">
+        {% if cliente %}
+            {% for object in cliente %}
+            <tr>
+                <td><p>
+                        <h3>ID:<strong>{{ object.id }}</strong> - 
+                        Name:<strong> {{ object.name }}</strong> / 
+                        CPF:<strong>{{ object.cpf }}</strong></h3>
+                    </p>
+                    <ul class="list-group">
+                        {% for tel in object.telefones.all %}
+                            <li>
+                                {{ tel.numero }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                <p class="pt-2">
+                    <a href="{% url 'formset:cliente_update' object.pk %}" class="btn btn-dark">Editar Cliente</a>
+                </p>
+                </td>
+            </tr>
+            {% endfor %}
+            
+        {% else %}
+        <p>Não há telefones cadastrados</p>
+        
+        {% endif %}
+    </div>
+</div>
+<hr>
+<p class="pt-2">
+    <a href="{% url 'formset:clientes_list' %}" class="btn btn-secondary">Cancel</a>
+</p>
+
+{% endblock %}
