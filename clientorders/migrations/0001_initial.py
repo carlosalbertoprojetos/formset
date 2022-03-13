@@ -14,13 +14,25 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Cliente',
+            name='Client',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
-                ('cpf', models.CharField(blank=True, max_length=11)),
-                ('data_nasc', models.DateField(blank=True, null=True)),
+                ('name', models.CharField(max_length=50, verbose_name='Cliente')),
+                ('email', models.EmailField(max_length=254, verbose_name='E-mail')),
+                ('ethnicity', models.CharField(choices=[('Português', 'português'), ('Brasileiro', 'brasileiro'), ('Africano', 'africano')], max_length=10, verbose_name='Etnia')),
+                ('status', models.CharField(choices=[('Ativo', 'ativo'), ('Inativo', 'inativo')], default='Ativo', max_length=10, verbose_name='Status')),
+                ('street', models.CharField(max_length=50, verbose_name='Logradouro')),
+                ('number', models.IntegerField(verbose_name='Nº')),
+                ('complement', models.CharField(blank=True, max_length=10, verbose_name='Complemento')),
+                ('city', models.CharField(choices=[('\tLisboa\t', '\tLisboa\t'), ('\tSintra\t', '\tSintra\t'), ('\tVilaNovadeGaia\t', '\tVilaNovadeGaia\t'), ('\tCorvo\t', '\tCorvo\t')], max_length=26, verbose_name='Cidade')),
+                ('state', models.CharField(choices=[('Ag', 'Algarve'), ('Al', 'Alto Alentejo'), ('Ba', 'Baixo Alentejo'), ('Be', 'Beira Alta'), ('Bx', 'Beira Baixa'), ('Bl', 'Beira Litoral'), ('Dl', 'Douro Litoral'), ('Ex', 'Estremadura'), ('Mb', 'Minho Braga'), ('Ri', 'Ribatejo'), ('Tm', 'Trás os Montes'), ('Ma', 'Madeira*'), ('Ac', 'Açores*')], max_length=26, verbose_name='Província')),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
+            options={
+                'verbose_name': 'Cliente',
+                'verbose_name_plural': 'Clientes',
+                'ordering': ['-created_at'],
+            },
         ),
         migrations.CreateModel(
             name='Order',
@@ -30,9 +42,10 @@ class Migration(migrations.Migration):
                 ('data', models.DateField(verbose_name='Data de entrega')),
                 ('formpayment', models.CharField(choices=[('Pix', 'pix'), ('Cartão', 'cartão'), ('Dinheiro', 'dinheiro')], max_length=11, verbose_name='Forma pgto')),
                 ('total', models.DecimalField(decimal_places=2, default=0.0, max_digits=11, null=True, verbose_name='Total')),
-                ('status', models.CharField(choices=[('Pendente', 'pendente'), ('Pronto', 'pronto'), ('Aguardando', 'aguardando'), ('Entregue', 'entregue'), ('Cancelado', 'cancelado')], default='pendente', max_length=10, verbose_name='Condição')),
+                ('status', models.CharField(choices=[('Pendente', 'Pendente'), ('Pronto', 'Pronto'), ('Aguardando', 'Aguardando'), ('Enviado', 'Enviado'), ('Entregue', 'Entregue'), ('Cancelado', 'Cancelado')], default='Pendente', max_length=10, verbose_name='Condição')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Criado em')),
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='Atualizado em')),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cliente_pedido', to='clientorders.client')),
             ],
             options={
                 'verbose_name': 'Pedido',
@@ -50,6 +63,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(blank=True, verbose_name='Descrição')),
                 ('price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Preço')),
                 ('available', models.BooleanField(default=True, verbose_name='Disponível')),
+                ('quantity', models.IntegerField(verbose_name='Quantidade')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
             ],
@@ -60,19 +74,19 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Programmer',
+            name='SocialMedia',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
+                ('socialmedia', models.CharField(max_length=50, verbose_name='Rede Social')),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cliente_midiasocial', to='clientorders.client')),
             ],
         ),
         migrations.CreateModel(
-            name='Telefone',
+            name='Phone',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('numero', models.CharField(max_length=20)),
-                ('whatsapp', models.BooleanField(default=False)),
-                ('cliente', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='telefones', to='formset.cliente')),
+                ('celphone', models.CharField(max_length=14, verbose_name='Celular')),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cliente_telefone', to='clientorders.client')),
             ],
         ),
         migrations.CreateModel(
@@ -83,16 +97,8 @@ class Migration(migrations.Migration):
                 ('price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Preço')),
                 ('subtotal', models.DecimalField(decimal_places=2, default=0, editable=False, max_digits=10, verbose_name='Subtotal')),
                 ('details', models.CharField(blank=True, max_length=300, verbose_name='Detalhes')),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='formset.order')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='produto_pedido', to='formset.product')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Language',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
-                ('programmer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='formset.programmer')),
+                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='clientorders.order')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='produto_pedido', to='clientorders.product')),
             ],
         ),
     ]

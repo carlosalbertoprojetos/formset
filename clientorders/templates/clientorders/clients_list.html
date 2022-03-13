@@ -1,0 +1,38 @@
+{% extends 'clientorders/main_template.html' %}
+{% block content %}
+
+<br>
+
+<div class="row">
+	<div class="col-md">
+		<div class="row">
+			<div class="col-sm-12 col-md-6">
+				<h2 class="form-title pl-3">Clientes</h2>
+			</div>
+			<a href="{% url 'clientorders:client_create' %}">
+				<i class="fas fa-plus-circle fa-2x"></i>Novo Cliente</a>
+
+		</div>
+		<div class="card card-body">
+			<table class="table">
+				<tr>
+					<th>Cliente</th>
+					<th>Email</th>
+					<th>Etnia</th>
+					<th>Situação</th>
+				</tr>
+				{% for cliente in clients %}
+					<tr>
+						<td>{{cliente.name}}</td>
+						<td>{{cliente.email}}</td>
+						<td>{{cliente.ethnicity}}</td>
+						<td>{{cliente.status}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+	
+</div>
+
+{% endblock content %}

@@ -45,11 +45,12 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
 
-    # django-crispy-forms
     'crispy_forms',
+    'widget_tweaks',
     
     'user',
     'formset',
+    'clientorders',
 ]
 
 MIDDLEWARE = [

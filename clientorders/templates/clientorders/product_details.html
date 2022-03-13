@@ -1,0 +1,41 @@
+{% extends 'dashboard.html' %}
+
+
+{% load i18n account static crispy_forms_tags %}
+
+{% block title %}Produto{% endblock title %}
+
+
+{% block dashboard %}
+
+
+<div class="card">
+    <div class="col-md-12 p-lg-0">
+        <div class="card-header">
+            <h1 class="form-title">Detalhes do Produto</h1>
+        </div>
+        <div class="card-body">
+        {% if product %}
+            {% for object in product %}
+                <p>
+                    <h3>ID:<strong>{{ object.id }}</strong> - 
+                    Name:<strong> {{ object.name }}</strong> / 
+                    CPF:<strong>{{ object.cpf }}</strong></h3>
+                </p>
+                <p class="pt-2">
+                    <a href="{% url 'clientorders:product_update' object.pk %}" class="btn btn-dark">Editar Produto</a>
+                </p>
+            {% endfor %}
+            
+        {% else %}
+        <p>Não há produtos cadastrados</p>
+        
+        {% endif %}
+    </div>
+</div>
+<hr>
+<p class="pt-2">
+    <a href="{% url 'clientorders:products_list' %}" class="btn btn-secondary">Cancel</a>
+</p>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'clientorders/main_template.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+
+<div class="card">
+    <div class="col-md-12 p-lg-0 p-0">
+        <div class="card-header">
+            <h3>Produto</h3>
+        </div>
+    </div>
+</div>
+<div class="row">
+	<div class="col-md-6">
+		<div class="card card-body">
+            <form method="POST" enctype="multipart/form-data">            
+                {% csrf_token %}
+                {% for field in form %}
+                    {{field.label}}
+                    {{field|add_class:'form-control'}}
+                
+                {% endfor %}
+                <div class="mt-2">
+                    <p class="pt-2">
+                        <input type="submit" class="btn btn-dark" value="Save" />
+                    </p>
+                    <p class="pt-2">
+                        <a href="{% url 'clientorders:products_list' %}" class="btn btn-secondary">Cancelar</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>   
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'clientorders/main_template.html' %}
+{% block content %}
+
+<br>
+
+<div class="row">
+	<div class="col-md">
+		<div class="row">
+			<div class="col-sm-12 col-md-6">
+				<h2 class="form-title pl-3">Produtos</h2>
+			</div>
+			<a href="{% url 'clientorders:product_create' %}">
+				<i class="fas fa-plus-circle fa-2x"></i>Novo Produto</a>
+
+		</div>
+		<div class="card card-body">
+			<table class="table">
+				<tr>
+					<th>Produto</th>
+					<th>Descrição</th>
+					<th>Price</th>
+					<th>Quant.Disponível</th>
+				</tr>
+				{% for product in products %}
+					<tr>
+						<td>{{product.name}}</td>
+						<td>{{product.description}}</td>
+						<td>R$ {{product.price}}</td>
+						<td>{{product.quantity}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+	
+</div>
+
+{% endblock content %}

@@ -11,8 +11,3 @@ urlpatterns = [
     path('dashboard/', views.dashboard_View, name='dashboard'),
     
 ]
-
-
-
-
-

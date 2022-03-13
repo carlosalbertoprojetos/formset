@@ -25,6 +25,8 @@ urlpatterns = [
     path('user/', include('user.urls'), name='user'),
 
     path('formset/', include('formset.urls'), name='formset'),
+    
+    path('clientorders/', include('clientorders.urls'), name='clientorders'),
 
     path('admin/', admin.site.urls),
 ]
