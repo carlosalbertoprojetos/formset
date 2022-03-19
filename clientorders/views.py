@@ -1,23 +1,24 @@
+from django.forms import inlineformset_factory
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.urls import reverse
 from django.urls import reverse_lazy as _
+from django.views.generic.edit import CreateView, UpdateView
 
-from .forms import OrderForm
-from .models import *
-
+from .forms import ClientOrderForm, OrderForm, OrderProductsForm
+from .models import Client, Order, OrderProducts, Product
 
 # -------------------(DETAIL/LIST VIEWS) -------------------
 
 
 def dashboard(request):
-    orders = Order.objects.all().order_by('-status')[0:5]
     clients = Client.objects.all()
+    orders = Order.objects.all().order_by('-status')[0:5]
     total_clients = clients.count()
     total_orders = Order.objects.all().count()
     waiting = Order.objects.filter(status='Aguardando').count()
     pending = Order.objects.filter(status='Pendente').count()
-    delivered = Order.objects.filter(status='Enviado').count()
+    sent = Order.objects.filter(status='Enviado').count()
 
     context = {
         'clients': clients,
@@ -25,10 +26,32 @@ def dashboard(request):
         'total_clients': total_clients,
         'total_orders': total_orders,
         'pending': pending,
-        'delivered': delivered,
+        'sent': sent,
         'waiting': waiting,
     }
     return render(request, 'clientorders/dashboard.html', context)
+
+
+def client_dashboard(request, pk):
+    client = list(Client.objects.filter(pk=pk))
+    orders = Order.objects.filter(client_id=pk).order_by('-status')[0:10]
+    total_orders = Order.objects.filter(client_id=pk).count()
+    waiting = Order.objects.filter(client_id=pk, status='Aguardando').count()
+    pending = Order.objects.filter(client_id=pk, status='Pendente').count()
+    sent = Order.objects.filter(client_id=pk, status='Enviado').count()
+    delivered = Order.objects.filter(client_id=pk, status='Entregue').count()
+    template_name = ('clientorders/client_dashboard.html', pk)
+
+    context = {
+        'client': client,
+        'orders': orders,
+        'total_orders': total_orders,
+        'pending': pending,
+        'sent': sent,
+        'waiting': waiting,
+        'delivered': delivered,
+    }
+    return render(request, template_name, context)
 
 
 def product_details(request, pk):
@@ -43,18 +66,26 @@ def products_list(request):
     return render(request, 'clientorders/products_list.html', context)
 
 
-class ClientDetailsView(DetailView):
-    model = Client
-    template_name = 'clientorders/client_details.html'    
-
-    
-client_details = ClientDetailsView.as_view()
+def client_details(request, pk):
+    objects = Client.objects.filter(pk=pk)
+    context = {'objects': objects}
+    return render(request, 'clientorders/client_details.html', context)
 
 
 def clients_list(request):
     clients = Client.objects.all()
     context = {'clients': clients}
     return render(request, 'clientorders/clients_list.html', context)
+
+
+def orders_client_list(request, pk):
+    client = Client.objects.filter(pk=pk)
+    orders = Order.objects.all()
+    context = {
+        'client': client,
+        'orders': orders
+    }
+    return render(request, 'clientorders/order_client_list.html', context)
 
 
 # -------------------(CREATE VIEWS) -------------------
@@ -75,30 +106,85 @@ class ClientCreateView(CreateView):
     fields = '__all__'
     template_name = 'clientorders/client_create.html'
     success_url = _('clientorders:clients_list')
-    action = 'create'
 
 
 client_create = ClientCreateView.as_view()
 
 
-def order_create(request):
-    action = 'create'
-    form = OrderForm()
+# def order_create(request):
+#     form = OrderForm()
+
+#     if request.method == 'POST':
+#         form = OrderForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('clientorders:dashboard')
+
+#     context = {
+#         'form': form
+#     }
+#     return render(request, 'clientorders/order_create.html', context)
+
+
+def client_order_create(request, pk):
+    form = ClientOrderForm()
+
     if request.method == 'POST':
-        form = OrderForm(request.POST)
+        form = ClientOrderForm(request.POST)
         if form.is_valid():
-            form.save()
+            order = form.save(commit=False)
+            order.client_id = pk
+            order.save()
             return redirect('clientorders:dashboard')
 
-    context = {'action': action, 'form': form}
+    context = {
+        'form': form
+    }
     return render(request, 'clientorders/order_create.html', context)
+
+
+def order_create(request):
+
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+
+        Products_Order_Factory = inlineformset_factory(
+            Order, OrderProducts, form=OrderProductsForm, extra=3)
+        form_order_products = Products_Order_Factory(request.POST)
+
+        if form.is_valid() and form_order_products.is_valid():
+            order = form.save()
+            # order.client_id = pk
+            # order.save()
+            form_order_products.instance = order
+            form_order_products.save()
+            return redirect('clientorders:clients_list')
+
+        else:
+            context = {
+                'form': form,
+                'form_order_products': form_order_products
+            }
+            return render(request, 'clientorders/order_create.html', context)
+
+    elif request.method == 'GET':
+        form = OrderForm()
+        
+        Products_Order_Factory = inlineformset_factory(
+            Order, OrderProducts, form=OrderProductsForm, extra=3)
+        form_order_products = Products_Order_Factory()
+
+        context = {
+            'form': form,
+            'form_order_products': form_order_products
+        }
+        return render(request, 'clientorders/order_create.html', context)
 
 
 # -------------------(UPDATE VIEWS) -------------------
 
 
 def order_update(request, pk):
-    action = 'update'
     order = Order.objects.get(id=pk)
     form = OrderForm(instance=order)
 
@@ -106,9 +192,10 @@ def order_update(request, pk):
         form = OrderForm(request.POST, instance=order)
         if form.is_valid():
             form.save()
-            return redirect('clientorders:dashboard')
 
-    context = {'action': action, 'form': form}
+    context = {
+        'form': form
+    }
     return render(request, 'clientorders/order_update.html', context)
 
 

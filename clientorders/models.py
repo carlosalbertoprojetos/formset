@@ -126,7 +126,6 @@ def insert_slug(sender, instance, **kwargs):
         return instance.save()
 
 
-
 class Order(models.Model):
 
     STATUS_CHOICES = [

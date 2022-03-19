@@ -17,13 +17,13 @@
 				<tr>
 					<th></th>
 					<th>Cliente</th>
-					<th>Pedidos</th>
+					<th>Situação</th>
 				</tr>
-				{% for customer in clients %}
+				{% for client in clients %}
 				<tr>
-					<td><a href="{% url 'clientorders:client_details' customer.id %}" class="btn btn-sm btn-info">View</a></td>
-					<td>{{customer.name}}</td>
-					<td>{{customer.orders}}</td>
+					<td><a href="{% url 'clientorders:client_dashboard' client.id %}" class="btn btn-sm btn-info">View</a></td>
+					<td>{{client}}</td>
+					<td>{{client.status}}</td>
 				</tr>
 				{% endfor %}
 			</table>

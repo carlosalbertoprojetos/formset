@@ -2,7 +2,7 @@
 
 
 {% load i18n account static crispy_forms_tags %}
-
+{% load widget_tweaks %}
 {% block title %}Cliente{% endblock title %}
 
 
@@ -15,33 +15,22 @@
             <h1 class="form-title">Detalhes do Cliente</h1>
         </div>
         <div class="card-body">
-        {% if object %}
-            {% for object in object %}
-            <tr>
-                <td>
-                    <p><h3>
-                        ID:<strong>{{ object.id }}</strong> - 
-                        Name:<strong> {{ object.name }}</strong> / 
-                        CPF:<strong>{{ object.cpf }}</strong>
-                    </h3></p>
-                </td>
-                <td>
-                <p class="pt-2">
-                    <a href="{% url 'clientorders:client_update' object.pk %}" class="btn btn-dark">Editar Cliente</a>
-                </p>
-                </td>
-            </tr>
-            {% endfor %}
-            
-        {% else %}
-        <p>Não há telefones cadastrados</p>
-        
-        {% endif %}
+        {% for field in objects %}
+            <p>ID: {{ field.id }}</p>
+            <p>Name: {{ field.name }}</p>
+            <p>Email: {{ field.email }}</p>
+            <p>Etnia: {{ field.ethnicity }}</p>
+            <p>Status:{{ field.status }}</p>
+            <p class="pt-2">
+                <a href="{% url 'clientorders:client_update' field.pk %}" class="btn btn-dark">Editar Cliente</a>
+            </p>
+        {% endfor %}
+        </div>
     </div>
 </div>
 <hr>
 <p class="pt-2">
-    <a href="{% url 'formset:clientes_list' %}" class="btn btn-secondary">Cancel</a>
+    <a href="{% url 'clientorders:dashboard' %}" class="btn btn-secondary">Sair</a>
 </p>
 
 {% endblock %}

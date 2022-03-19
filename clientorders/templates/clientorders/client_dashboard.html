@@ -1,0 +1,123 @@
+
+{% extends 'clientorders/main_template.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3 card-body">
+				<h2 class="form-title pl-2">Cliente</h2>
+			</div>
+			<div class="col-md-8 card-body">
+			{% for field in client %}
+				<p>ID: {{ field.id }}   /   Name: {{ field.name }}   /   Email: {{ field.email }}</p>
+				<p>Etnia: {{ field.ethnicity }}  /  Status:{{ field.status }}</p>
+				<a href="{% url 'clientorders:client_update' field.pk %}" class="btn btn-dark">Editar Cliente</a>
+				<a class="btn btn-primary" href="{% url 'clientorders:order_create' %}">Criar Pedido</a>
+			{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+<hr class="mt-0">
+<div class="row">
+	<div class="col">
+		<div class="col-md">
+			<div class="card text-center text-white  mb-3" id="total-orders">
+			  	<div class="card-header">
+			  		<h5 class="card-title">Total de Pedidos</h5>
+			  	</div>
+			  	<div class="card-body">
+			    	<h3 class="card-title">{{ total_orders }}</h3>
+			  	</div>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="col-md">
+			<div class="card text-center text-white  mb-3" id="orders-pending">
+				  <div class="card-header">
+					  <h5 class="card-title">Pendentes</h5>
+				  </div>
+				  <div class="card-body">
+					<h3 class="card-title">{{ pending }}</h3>
+				  </div>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="col-md">
+			<div class="card text-center text-white  mb-3" id="orders-pending">
+				  <div class="card-header">
+					  <h5 class="card-title">Aguardando</h5>
+				  </div>
+				  <div class="card-body">
+					<h3 class="card-title">{{ waiting }}</h3>
+				  </div>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="col-md">
+			<div class="card text-center text-white  mb-3" id="orders-pending">
+				  <div class="card-header">
+			  		<h5 class="card-title">Enviados</h5>
+			  	</div>
+			  	<div class="card-body">
+			    	<h3 class="card-title">{{ sent }}</h3>
+			  	</div>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="col-md">
+			<div class="card text-center text-white  mb-3" id="orders-pending">
+				  <div class="card-header">
+			  		<h5 class="card-title">Entregues</h5>
+			  	</div>
+			  	<div class="card-body">
+			    	<h3 class="card-title">{{ delivered }}</h3>
+			  	</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row p-3">
+	<div class="col-md-12">
+		<h5>ÚLTIMOS PEDIDOS</h5>
+		<hr>
+		<div class="card card-body">
+			<table class="table table-sm">
+				<tr>
+					<th>Retirar</th>
+					<th>Data Entrega</th>
+					<th>Forma Pgto</th>
+					<th>Total</th>
+					<th>Situação</th>
+					<th>Editar</th>
+					<th>Deletar</th>
+				</tr>
+				{% for order in orders %}
+				<tr>
+					<td>{{order.withdraw}}</td>
+					<td>{{order.date|date}}</td>
+					<td>{{order.formpayment}}</td>
+					<td>{{order.total}}</td>
+					<td>{{order.status}}</td>
+					<td>
+						<a class="btn btn-sm btn-warning" href="{% url 'clientorders:order_update' order.id %}">Editar</a>
+					</td>
+					<td>
+						{% if not order.status == 'Entregue' %}
+						<a class="btn btn-sm btn-danger" href="{% url 'clientorders:order_delete' order.id %}">Deletar</a>
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

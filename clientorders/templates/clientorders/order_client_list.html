@@ -1,0 +1,59 @@
+{% extends 'clientorders/main_template.html' %}
+
+
+{% block content %}
+
+
+<br>
+<div class="row">
+	<div class="col-md">
+		<div class="row">
+			<div class="col-md-2 card-body">
+				<h2 class="form-title pl-3">Cliente</h2>
+			</div>
+			<div class="col-md-6 card-body">
+			{% for field in client %}
+				<p>ID: {{ field.id }}   /   Name: {{ field.name }}</p>
+				<p>Email: {{ field.email }}</p>
+				<p>Etnia: {{ field.ethnicity }}  /  Status:{{ field.status }}</p>
+				<p class="pt-2">
+					<a href="{% url 'clientorders:client_update' field.pk %}" class="btn btn-dark">Editar Cliente</a>
+				</p>
+			{% endfor %}
+			</div>
+		</div>
+		<div class="card card-body">
+			<a class="btn btn-primary  btn-sm btn-block" href="{% url 'clientorders:order_create' %}">Criar Pedido</a>
+			<table class="table table-sm">
+				<tr>
+					<th>Retirar</th>
+					<th>Data Entrega</th>
+					<th>Forma Pgto</th>
+					<th>Total</th>
+					<th>Situação</th>
+					<th>Editar</th>
+					<th>Deletar</th>
+				</tr>
+				{% for order in orders %}
+				<tr>
+					<td>{{order.withdraw}}</td>
+					<td>{{order.date|date}}</td>
+					<td>{{order.formpayment}}</td>
+					<td>{{order.total}}</td>
+					<td>{{order.status}}</td>
+					<td>
+						<a class="btn btn-sm btn-warning" href="{% url 'clientorders:order_update' order.id %}">Editar</a>
+					</td>
+					<td>
+						{% if not order.status == 'Entregue' %}
+						<a class="btn btn-sm btn-danger" href="{% url 'clientorders:order_delete' order.id %}">Deletar</a>
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>	
+</div>
+
+{% endblock content %}

@@ -118,12 +118,10 @@ def add_language(request, programmer_id):
             return redirect('formset:add_language', programmer_id=programmer.id)  
         
         
-    formset = LanguageFormset(queryset=Language.objects.filter(programmer__id=programmer.id))
-    
+    formset = LanguageFormset(queryset=Language.objects.filter(programmer__id=programmer.id))    
     return render(request, 'language_model.html', {'formset':formset})
-    
-    
- 
+
+
  # 2) inlineformset_factory
 def add_language2(request, programmer_id):
     programmer = Programmer.objects.get(pk=programmer_id)
@@ -135,8 +133,7 @@ def add_language2(request, programmer_id):
             formset.save()
             return redirect('formset:add_language2', programmer_id=programmer.id)        
         
-    formset = LanguageFormset(instance=programmer)  
-    
+    formset = LanguageFormset(instance=programmer)    
     return render(request, 'language_inline.html', {'formset':formset})
 
 
@@ -152,13 +149,13 @@ def add_language3(request, programmer_id):
             formset.save()
             return redirect('formset:add_language3', programmer_id=programmer.id)
         
-    formset = LanguageFormset(instance=programmer)  
-
+    formset = LanguageFormset(instance=programmer)
     return render(request, 'language_inline.html', {'formset':formset})
- 
- 
+
+
 # ================================================= TERCEIRO EXEMPLO FORMSET =================================================
- 
+
+
 def clientes_list(request):
     cliente = Cliente.objects.all()
     context = {
@@ -176,6 +173,7 @@ def cliente_details(request, pk):
     
 
 def cliente_create(request):
+    
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         Form_Telefone_Factory = inlineformset_factory(Cliente, Telefone, form=TelefoneFormset)
@@ -195,14 +193,15 @@ def cliente_create(request):
     
     elif request.method == 'GET':
         form = ClienteForm()
+        
         Form_Telefone_Factory = inlineformset_factory(Cliente, Telefone, form=TelefoneFormset, extra=3)
         form_telefone = Form_Telefone_Factory()
+        
         context = {
             'form': form,
             'form_telefone':form_telefone
         }
         return render(request, 'cliente_create.html', context)
-
 
 
 def cliente_update(request, id):
@@ -223,7 +222,7 @@ def cliente_update(request, id):
             context = {
                 'form': form,
                 'form_telefone':form_telefone
-         }
+            }
         return render(request, 'cliente_update.html', context)
         
     elif request.method == 'GET':
